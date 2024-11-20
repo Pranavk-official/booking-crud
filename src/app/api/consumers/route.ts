@@ -21,9 +21,11 @@ export async function POST(req: Request) {
   try {
     await dbConnect();
     const body = await req.json();
+    console.log(body);
     const newConsumer = await ConsumerModel.create(body);
     return NextResponse.json(newConsumer, { status: 201 });
   } catch (error) {
+    console.error("Error adding new consumer:", error);
     return NextResponse.json(
       { error: "Failed to create consumer" },
       { status: 400 },

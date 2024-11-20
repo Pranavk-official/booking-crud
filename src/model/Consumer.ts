@@ -21,7 +21,6 @@ const ConsumerSchema: Schema<Consumer> = new Schema({
     type: String,
     trim: true,
     required: [true, "Phone number is required"],
-    match: [/[+][9][1]-[7-9]\d{9}/gim, "Enter valid 10-digit phone number"],
   },
   noOfCylinder: {
     type: Number,

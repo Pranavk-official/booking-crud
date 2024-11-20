@@ -53,7 +53,7 @@ export default function Dashboard() {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-semibold">User Management Dashboard</h1>
-        <Button onClick={() => router.push("/consumer/add")}>
+        <Button onClick={() => router.push("/dashboard/consumer/add")}>
           Add New Consumer
         </Button>
       </div>
@@ -89,7 +89,7 @@ export default function Dashboard() {
                 <td className="border border-gray-300 px-4 py-2 flex space-x-2">
                   <Button
                     onClick={() =>
-                      router.push(`/dashboard/edit/${consumer._id}`)
+                      router.push(`/dashboard/consumer/edit/${consumer._id}`)
                     }
                   >
                     Edit

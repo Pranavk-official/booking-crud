@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 
-export default function AddConsumer() {
+export default function EditConsumer() {
   const [formData, setFormData] = useState({
     name: "",
     consumerNo: "",
@@ -14,6 +15,27 @@ export default function AddConsumer() {
     noOfCylinder: "",
   });
   const router = useRouter();
+  const { id } = useParams();
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchConsumer = async () => {
+      try {
+        const res = await fetch(`/api/consumers/${id}`);
+        const data = await res.json();
+        setFormData(data);
+      } catch (error) {
+        console.error(error);
+        // toast({
+        //   title: "Error",
+        //   description: error.message,
+        //   variant: "destructive",
+        // });
+      }
+    };
+    fetchConsumer();
+  }, [id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,27 +44,41 @@ export default function AddConsumer() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/consumers", {
-        method: "POST",
+      const res = await fetch(`/api/consumers/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       if (res.ok) {
+        toast({
+          title: "Success",
+          description: "Successfully updated consumer",
+        });
         router.push("/dashboard");
       } else {
-        console.error("Failed to add consumer");
+        console.error("Failed to update consumer");
+        toast({
+          title: "Failed",
+          description: "Failed to update consumer",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error(error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
   return (
-    <div className="container min-h-screen mx-auto p-4 flex justify-center">
+    <div className="container mx-auto p-4 flex justify-center">
       <Card className="w-full max-w-lg shadow-md">
         <CardHeader>
           <CardTitle className="text-center text-xl font-semibold">
-            Add New Consumer
+            Edit Consumer
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -81,7 +117,7 @@ export default function AddConsumer() {
             </div>
             <div className="flex justify-center">
               <Button type="submit" className="w-full">
-                Add Consumer
+                Update Consumer
               </Button>
             </div>
           </form>

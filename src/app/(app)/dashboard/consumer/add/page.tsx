@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function EditConsumer() {
+import { useToast } from "@/hooks/use-toast";
+
+export default function AddConsumer() {
   const [formData, setFormData] = useState({
     name: "",
     consumerNo: "",
@@ -14,20 +16,8 @@ export default function EditConsumer() {
     noOfCylinder: "",
   });
   const router = useRouter();
-  const { id } = useParams();
 
-  useEffect(() => {
-    const fetchConsumer = async () => {
-      try {
-        const res = await fetch(`/api/consumers/${id}`);
-        const data = await res.json();
-        setFormData(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchConsumer();
-  }, [id]);
+  const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,18 +26,32 @@ export default function EditConsumer() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/consumers/${id}`, {
-        method: "PUT",
+      const res = await fetch("/api/consumers", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       if (res.ok) {
+        toast({
+          title: "Success",
+          description: "Successfully added the consumer",
+        });
         router.push("/dashboard");
       } else {
-        console.error("Failed to update consumer");
+        console.error("Failed to add consumer");
+        toast({
+          title: "Failed",
+          description: "Failed to add consumer",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error(error);
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -56,7 +60,7 @@ export default function EditConsumer() {
       <Card className="w-full max-w-lg shadow-md">
         <CardHeader>
           <CardTitle className="text-center text-xl font-semibold">
-            Edit Consumer
+            Add New Consumer
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -95,7 +99,7 @@ export default function EditConsumer() {
             </div>
             <div className="flex justify-center">
               <Button type="submit" className="w-full">
-                Update Consumer
+                Add Consumer
               </Button>
             </div>
           </form>
