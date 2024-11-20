@@ -8,7 +8,8 @@ export async function GET() {
     await dbConnect();
     const consumers = await ConsumerModel.find();
     return NextResponse.json(consumers);
-  } catch (error) {
+  } catch (_error) {
+    console.error("An error occurred", _error);
     return NextResponse.json(
       { error: "Failed to fetch consumers" },
       { status: 500 },

@@ -1,15 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
 import ConsumerModel from "@/model/Consumer";
 import dbConnect from "@/lib/dbConnect";
 
-// GET: Fetch a single consumer by ID
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } },
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await dbConnect();
-    const consumer = await ConsumerModel.findById(params.id);
+
+    const id = (await params).id;
+    const consumer = await ConsumerModel.findById(id);
     if (!consumer) {
       return NextResponse.json(
         { error: "Consumer not found" },
@@ -17,7 +19,8 @@ export async function GET(
       );
     }
     return NextResponse.json(consumer);
-  } catch (error) {
+  } catch (_error) {
+    console.error("An error occurred", _error);
     return NextResponse.json(
       { error: "Failed to fetch consumer" },
       { status: 500 },
@@ -25,22 +28,18 @@ export async function GET(
   }
 }
 
-// PUT: Update a consumer by ID
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } },
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await dbConnect();
-    const body = await req.json();
-    const updatedConsumer = await ConsumerModel.findByIdAndUpdate(
-      params.id,
-      body,
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
+    const { id } = await params;
+    const body = await request.json();
+    const updatedConsumer = await ConsumerModel.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
     if (!updatedConsumer) {
       return NextResponse.json(
         { error: "Consumer not found" },
@@ -48,7 +47,8 @@ export async function PUT(
       );
     }
     return NextResponse.json(updatedConsumer);
-  } catch (error) {
+  } catch (_error) {
+    console.error("An error occurred", _error);
     return NextResponse.json(
       { error: "Failed to update consumer" },
       { status: 400 },
@@ -56,14 +56,15 @@ export async function PUT(
   }
 }
 
-// DELETE: Remove a consumer by ID
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } },
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     await dbConnect();
-    const deletedConsumer = await ConsumerModel.findByIdAndDelete(params.id);
+
+    const { id } = await params;
+    const deletedConsumer = await ConsumerModel.findByIdAndDelete(id);
     if (!deletedConsumer) {
       return NextResponse.json(
         { error: "Consumer not found" },
@@ -71,7 +72,8 @@ export async function DELETE(
       );
     }
     return NextResponse.json({ message: "Consumer deleted successfully" });
-  } catch (error) {
+  } catch (_error) {
+    console.error("An error occurred", _error);
     return NextResponse.json(
       { error: "Failed to delete consumer" },
       { status: 500 },

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDebounceValue as useDebounce } from "usehooks-ts";
+// import { useDebounceValue as useDebounce } from "usehooks-ts";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,10 @@ import { signUpSchema } from "@/schemas/signUpSchema";
 
 export default function SignUpForm() {
   const [username, setUsername] = useState("");
-  const [usernameMessage, setUsernameMessage] = useState("");
-  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [usernameMessage] = useState("");
+  const [isCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const debouncedUsername = useDebounce(username, 300);
+  // const debouncedUsername = useDebounce(username, 300);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -85,7 +85,7 @@ export default function SignUpForm() {
 
       // Default error message
       const errorMessage = axiosError.response?.data.message;
-      ("There was a problem with your sign-up. Please try again.");
+      // ("There was a problem with your sign-up. Please try again.");
 
       toast({
         title: "Sign Up Failed",

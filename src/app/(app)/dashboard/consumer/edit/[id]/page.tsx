@@ -67,7 +67,6 @@ export default function EditConsumer() {
       console.error(error);
       toast({
         title: "Error",
-        description: error.message,
         variant: "destructive",
       });
     }

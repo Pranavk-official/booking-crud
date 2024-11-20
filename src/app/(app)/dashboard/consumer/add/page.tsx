@@ -49,7 +49,7 @@ export default function AddConsumer() {
       console.error(error);
       toast({
         title: "Error",
-        description: error.message,
+        description: "Error",
         variant: "destructive",
       });
     }
