@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const HomePage: React.FC = () => {
   return (
-    <div className="container mx-auto p-4">
+    <div className="mx-auto p-4">
       <Card>
         <CardHeader>
           <CardTitle>Consumer Management</CardTitle>
