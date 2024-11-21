@@ -12,7 +12,7 @@ export async function GET() {
     console.error("An error occurred", _error);
     return NextResponse.json(
       { error: "Failed to fetch consumers" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -22,14 +22,24 @@ export async function POST(req: Request) {
   try {
     await dbConnect();
     const body = await req.json();
-    console.log(body);
+    const existingConsumer = await ConsumerModel.findOne({
+      consumerNo: body.consumerNo,
+    });
+
+    if (existingConsumer) {
+      return NextResponse.json(
+        { error: "Consumer with this number already exists" },
+        { status: 400 }
+      );
+    }
+
     const newConsumer = await ConsumerModel.create(body);
     return NextResponse.json(newConsumer, { status: 201 });
   } catch (error) {
     console.error("Error adding new consumer:", error);
     return NextResponse.json(
       { error: "Failed to create consumer" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 }
