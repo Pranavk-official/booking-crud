@@ -31,17 +31,19 @@ export default function AddConsumer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+      const responseData = await res.json();
       if (res.ok) {
         toast({
           title: "Success",
-          description: "Successfully added the consumer",
+          description:
+            responseData.message || "Successfully added the consumer",
         });
         router.push("/dashboard");
       } else {
-        console.error("Failed to add consumer");
+        console.error("Failed to add consumer", responseData.error);
         toast({
           title: "Failed",
-          description: "Failed to add consumer",
+          description: responseData.error || "Failed to add consumer",
           variant: "destructive",
         });
       }
@@ -49,7 +51,7 @@ export default function AddConsumer() {
       console.error(error);
       toast({
         title: "Error",
-        description: "Error",
+        description: "An error occurred while adding the consumer",
         variant: "destructive",
       });
     }

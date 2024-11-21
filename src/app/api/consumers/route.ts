@@ -23,14 +23,25 @@ export async function POST(req: Request) {
     await dbConnect();
     const body = await req.json();
     const existingConsumer = await ConsumerModel.findOne({
-      consumerNo: body.consumerNo,
+      $or: [
+        { consumerNo: body.consumerNo },
+        { phone: body.phone },
+        { name: body.name },
+      ],
     });
 
     if (existingConsumer) {
-      return NextResponse.json(
-        { error: "Consumer with this number already exists" },
-        { status: 400 }
-      );
+      const errorMessage = () => {
+        if (existingConsumer.consumerNo === body.consumerNo) {
+          return "Consumer with this consumer number already exists";
+        } else if (existingConsumer.phone === body.phone) {
+          return "Consumer with this phone number already exists";
+        } else {
+          return "Consumer with this name already exists";
+        }
+      };
+
+      return NextResponse.json({ error: errorMessage() }, { status: 400 });
     }
 
     const newConsumer = await ConsumerModel.create(body);
