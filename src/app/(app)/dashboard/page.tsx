@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Consumer {
   _id: string;
@@ -59,34 +67,33 @@ export default function Dashboard() {
       </div>
 
       {loading ? (
-        <p>Loading consumers...</p>
+        <div className="flex items-center justify-center">
+          <div
+            className="spinner-border animate-spin inline-block w-5 h-5 border-b-2 border-blue-500 rounded-full"
+            role="status"
+          >
+            <span className="hidden">Loading...</span>
+          </div>
+        </div>
       ) : consumers.length > 0 ? (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2">Name</th>
-              <th className="border border-gray-300 px-4 py-2">Consumer No</th>
-              <th className="border border-gray-300 px-4 py-2">Phone</th>
-              <th className="border border-gray-300 px-4 py-2">Cylinders</th>
-              <th className="border border-gray-300 px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table className="w-full">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Consumer No</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Cylinders</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {consumers.map((consumer) => (
-              <tr key={consumer._id}>
-                <td className="border border-gray-300 px-4 py-2">
-                  {consumer.name}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {consumer.consumerNo}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {consumer.phone}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {consumer.noOfCylinder}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 flex space-x-2">
+              <TableRow key={consumer._id}>
+                <TableCell>{consumer.name}</TableCell>
+                <TableCell>{consumer.consumerNo}</TableCell>
+                <TableCell>{consumer.phone}</TableCell>
+                <TableCell>{consumer.noOfCylinder}</TableCell>
+                <TableCell className="flex space-x-2">
                   <Button
                     onClick={() =>
                       router.push(`/dashboard/consumer/edit/${consumer._id}`)
@@ -100,11 +107,11 @@ export default function Dashboard() {
                   >
                     Delete
                   </Button>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       ) : (
         <p>No consumers found.</p>
       )}
